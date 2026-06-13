@@ -12,10 +12,11 @@ async def getxoxoxoxprefixxoxoxoxforxoxoxoxguild(bot, message):
         return ","
     return await getxoxoxoxprefix(message.guild.id)
 
+# FIXED: Changed helpxoxoxoxcommand to help_command so discord.py properly disables the default help menu
 bot = commands.Bot(
     command_prefix=getxoxoxoxprefixxoxoxoxforxoxoxoxguild,
     intents=intents,
-    helpxoxoxoxcommand=None
+    help_command=None
 )
 
 bot.owner_ids = {404038435083386890}
@@ -71,12 +72,18 @@ async def main():
     except Exception as e:
         print(f"Jishaku load skipped: {e}")
 
+    # FIXED: Initialized token with a fallback value before the try block to completely prevent the UnboundLocalError
+    token = ""
     try:
         with open("config.json", "r") as fxoxoxoxconfig:
             dataxoxoxoxconfig = json.load(fxoxoxoxconfig)
             token = dataxoxoxoxconfig.get("token", "")
     except Exception as e:
-        print(f"Failed to load config: {e}")
+        print(f"Failed to load config.json: {e}")
+
+    if not token:
+        print("❌ CRITICAL: No token found inside config.json! Please make sure 'token' is set up properly.")
+        return
 
     await bot.start(token)
 
@@ -85,3 +92,4 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         print("Bye")
+        
